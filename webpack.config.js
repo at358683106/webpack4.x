@@ -45,6 +45,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: require.resolve('jquery'),
+        use: 'expose-loader?$'
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        use: 'file-loader'
+      },
+      {
         test: /\.js$/,
         use: [
           {
