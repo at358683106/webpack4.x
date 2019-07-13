@@ -1,3 +1,4 @@
+import "./a";
 import b from "./b";
 import "./index.css";
 import "./index.less";

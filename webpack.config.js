@@ -1,25 +1,46 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const TerserJSPlugin = require('terser-webpack-plugin')
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserJSPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   devServer: {
     port: 3000,
     progress: true,
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, "dist"),
     compress: true,
     hot: true,
     open: true
   },
-  mode: 'development', // development  production
-  entry: './src/index.js',
+  mode: "development", // development  production
+  entry: {
+    index: "./src/index.js",
+    other: "./src/other.js"
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist")
   },
   optimization: {
+    splitChunks: {
+      // 分割代码块
+      cacheGroups: {
+        // 缓存组
+        common: {
+          chunks: "initial",
+          minSize: 0,
+          minChunks: 2
+        },
+        vendor: {
+          priority: 1,
+          test: /node_modules/,
+          chunks: "initial",
+          minSize: 0,
+          minChunks: 2
+        }
+      }
+    },
     minimizer: [
       new TerserJSPlugin({
         cache: true,
@@ -31,43 +52,43 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index.html',
+      template: "./src/index.html",
+      filename: "index.html",
       hash: true,
       minify: {
         collapseWhitespace: true
       }
     }),
     new MiniCssExtractPlugin({
-      filename: 'main.css'
+      filename: "main.css"
     })
   ],
   module: {
     rules: [
       {
-        test: require.resolve('jquery'),
-        use: 'expose-loader?$'
+        test: require.resolve("jquery"),
+        use: "expose-loader?$"
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        use: 'file-loader'
+        use: "file-loader"
       },
       {
         test: /\.js$/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: ['@babel/preset-env'],
+              presets: ["@babel/preset-env"],
               plugins: [
-                ['@babel/plugin-proposal-decorators', { legacy: true }],
-                ['@babel/plugin-proposal-class-properties', { loose: true }],
-                '@babel/plugin-transform-runtime'
+                ["@babel/plugin-proposal-decorators", { legacy: true }],
+                ["@babel/plugin-proposal-class-properties", { loose: true }],
+                "@babel/plugin-transform-runtime"
               ]
             }
           }
         ],
-        include: path.resolve(__dirname, 'src'), // 只寻找这个目录下的js
+        include: path.resolve(__dirname, "src"), // 只寻找这个目录下的js
         exclude: /node_modules/ // 排除这个目录下的js
       },
       {
@@ -82,8 +103,8 @@ module.exports = {
           //   }
           // },
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader'
+          "css-loader",
+          "postcss-loader"
         ]
       },
       {
@@ -96,9 +117,9 @@ module.exports = {
           //   }
           // },
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'less-loader' // 安装less 和 less-loader
+          "css-loader",
+          "postcss-loader",
+          "less-loader" // 安装less 和 less-loader
         ]
       },
       {
@@ -111,9 +132,9 @@ module.exports = {
           //   }
           // },
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'stylus-loader' // 安装stylus 和 stylus-loader
+          "css-loader",
+          "postcss-loader",
+          "stylus-loader" // 安装stylus 和 stylus-loader
         ]
       },
       {
@@ -126,11 +147,11 @@ module.exports = {
           //   }
           // },
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader' // 安装sass 和 sass-loader
+          "css-loader",
+          "postcss-loader",
+          "sass-loader" // 安装sass 和 sass-loader
         ]
       }
     ]
   }
-}
+};
